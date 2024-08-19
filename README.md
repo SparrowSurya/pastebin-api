@@ -3,7 +3,6 @@ A fastapi service for code sharing.
 
 
 ## TODOS
-* writing api tests
 * deploy to vercel
 * a cronjob for autoatically deleting the expired pastes
 * logger

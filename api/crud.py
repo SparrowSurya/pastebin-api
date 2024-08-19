@@ -25,12 +25,3 @@ def create_db_paste(db: Session, paste: schemas.Paste) -> schemas.PasteInfo:
     db.commit()
     db.refresh(db_paste)
     return db_paste
-
-
-def delete_db_paste(db: Session, key: str) -> bool:
-    db_paste = get_db_paste_by_key(key)
-    if db_paste:
-        db.delete(db_paste)
-        db.commit()
-        return True
-    return False
