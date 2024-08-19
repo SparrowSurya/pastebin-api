@@ -3,15 +3,14 @@ A fastapi service for code sharing.
 
 
 ## TODOS
-* deploy to vercel
-* a cronjob for autoatically deleting the expired pastes
 * logger
+* deployment and move to postgres database instead sqlite3
 
 
 ## Run
 0. Download this project
 ```sh
-git clone https://github.com/sparrowsurya/pastebin-api.git
+git clone https://github.com/sparrowsurya/pastebin-api
 ```
 
 1. Setup
