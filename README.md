@@ -25,6 +25,7 @@ Create a `.env` file with following values
 ENV_NAME=development
 BASE_URL=127.0.0.1:8000
 DB_URL=sqlite:///./db.sqlite3
+INTERVAL=3600
 ```
 
 2. Install dependencies

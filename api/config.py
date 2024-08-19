@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     env_name: str = os.environ["ENV_NAME"]
     base_url: str = os.environ["BASE_URL"]
     db_url: str = os.environ["DB_URL"]
+    interval: str = os.environ["INTERVAL"]
 
     class Config:
         env_file = ".env"
