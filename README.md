@@ -4,7 +4,7 @@ A fastapi service for code sharing.
 
 ## TODOS
 * logger
-* deployment and move to postgres database instead sqlite3
+* deployment
 
 
 ## Run
@@ -19,11 +19,11 @@ virtualenv venv
 source venv/bin/activate
 ```
 
-Create a `.env` file with following values
+Create a `.env` file with following values (fill the respective values of `DB_URL`)
 ```
 ENV_NAME=development
 BASE_URL=127.0.0.1:8000
-DB_URL=sqlite:///./db.sqlite3
+DB_URL=postgresql://USERNAME:PASSWORD@HOSTNAME:PORT/DATABASE
 INTERVAL=3600
 ```
 

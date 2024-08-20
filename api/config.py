@@ -1,22 +1,18 @@
 import os
 import logging
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class Settings(BaseSettings):
     """Settings for the application."""
 
-    env_name: str = os.environ["ENV_NAME"]
-    base_url: str = os.environ["BASE_URL"]
-    db_url: str = os.environ["DB_URL"]
-    interval: str = os.environ["INTERVAL"]
+    env_name: str
+    base_url: str
+    db_url: str
+    interval: float
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 @lru_cache
