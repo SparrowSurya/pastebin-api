@@ -1,7 +1,8 @@
 import asyncio
+from contextlib import asynccontextmanager
+
 from fastapi import Depends, FastAPI, HTTPException, Request
 from sqlalchemy.orm import Session
-from contextlib import asynccontextmanager
 
 from . import schemas, models, crud
 from .config import get_settings

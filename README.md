@@ -1,7 +1,9 @@
 # Pastebin
 A fastapi service for code sharing.
 
-![Tests](https://github.com/sparrowsurya/pastebin-api/actions/workflows/tests.yaml/badge.svg)
+![tests](https://github.com/sparrowsurya/pastebin-api/actions/workflows/tests.yaml/badge.svg)
+![os](https://img.shields.io/badge/os-Linux-blue)
+
 
 ## TODOS
 * logger
