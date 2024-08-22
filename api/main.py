@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from . import schemas, models, crud
 from .config import get_settings
 from .database import SessionLocal, engine, get_db
-
 from .background_tasks import delete_expired_paste_task
 
 
