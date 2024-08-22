@@ -1,5 +1,5 @@
 import datetime
-from typing import optional
+from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -13,7 +13,7 @@ def create_unique_random_key(db: Session) -> str:
     return key
 
 
-def get_db_paste_by_key(db: Session, key: str) -> optional[schemas.PasteInfo]:
+def get_db_paste_by_key(db: Session, key: str) -> Optional[schemas.PasteInfo]:
     return db.query(models.Paste).filter(models.Paste.key==key).first()
 
 
