@@ -30,7 +30,11 @@ def root():
 
 @app.post("/")
 def create_paste(paste: schemas.Paste, db: Session = Depends(get_db)):
-    db_paste = crud.create_db_paste(db, paste)
+    try:
+        db_paste = crud.create_db_paste(db, paste)
+    except RuntimeError as error:
+        raise HTTPException(status_code=500, detail=str(error))
+
     url =  get_settings().base_url + f"/{db_paste.key}"
     return url
 

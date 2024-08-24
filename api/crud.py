@@ -6,19 +6,12 @@ from sqlalchemy.orm import Session
 from . import keygen, models, schemas
 
 
-def create_unique_random_key(db: Session) -> str:
-    key = keygen.create_random_key()
-    while get_db_paste_by_key(db, key):
-        key = keygen.create_random_key()
-    return key
-
-
 def get_db_paste_by_key(db: Session, key: str) -> Optional[schemas.PasteInfo]:
     return db.query(models.Paste).filter(models.Paste.key==key).first()
 
 
 def create_db_paste(db: Session, paste: schemas.Paste) -> schemas.PasteInfo:
-    key = create_unique_random_key(db)
+    key = keygen.create_unique_random_key(db)
 
     db_paste = models.Paste(key=key, expiry=paste.expiry)
     db_files = [models.File(text=f.text, kind=f.kind, name=f.name) for f in paste.files]
