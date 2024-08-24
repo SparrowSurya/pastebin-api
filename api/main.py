@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Request
@@ -10,13 +11,18 @@ from .database import SessionLocal, engine, get_db
 from .background_tasks import delete_expired_paste_task
 
 
+logger = logging.getLogger(__name__)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Application lifespan started!")
     interval = float(get_settings().interval)
     db = SessionLocal()
     asyncio.create_task(delete_expired_paste_task(interval, db))
     yield
     db.close()
+    logger.info("Application lifespan ended!")
 
 
 app = FastAPI(lifespan=lifespan)
@@ -33,6 +39,7 @@ def create_paste(paste: schemas.Paste, db: Session = Depends(get_db)):
     try:
         db_paste = crud.create_db_paste(db, paste)
     except RuntimeError as error:
+        logger.exception(error)
         raise HTTPException(status_code=500, detail=str(error))
 
     url =  get_settings().base_url + f"/{db_paste.key}"

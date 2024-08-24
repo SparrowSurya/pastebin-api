@@ -5,11 +5,6 @@ A fastapi service for code sharing.
 ![os](https://img.shields.io/badge/os-Linux-blue)
 
 
-## TODOS
-* logger
-* deployment
-
-
 ## Run
 0. Download this project
 ```sh
@@ -37,5 +32,5 @@ python3 -m pip install -r requirements.txt
 
 3. Run the api
 ```sh
-fastapi dev api/main.py
+uvicrn api.main:app --log-config=log_config.yaml
 ```

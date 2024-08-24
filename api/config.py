@@ -4,6 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
 
+logger = logging.getLogger(__name__)
+
+
 class Settings(BaseSettings):
     """Settings for the application."""
 
@@ -19,5 +22,5 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Get the application settings."""
     settings = Settings()
-    logging.info(f"Loading settings for {settings.env_name}")
+    logger.info(f"Loading settings for {settings.env_name}")
     return settings
