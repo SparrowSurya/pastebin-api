@@ -19,9 +19,10 @@ async def lifespan(app: FastAPI):
     logger.info("Application lifespan started!")
     interval = float(get_settings().interval)
     db = SessionLocal()
-    asyncio.create_task(delete_expired_paste_task(interval, db))
+    delete_task = asyncio.create_task(delete_expired_paste_task(interval, db))
     yield
     db.close()
+    delete_task.cancel()
     logger.info("Application lifespan ended!")
 
 
