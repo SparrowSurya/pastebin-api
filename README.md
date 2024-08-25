@@ -32,5 +32,5 @@ python3 -m pip install -r requirements.txt
 
 3. Run the api
 ```sh
-uvicrn api.main:app --log-config=log_config.yaml
+uvicorn api.main:app --log-config=log_config.json
 ```
