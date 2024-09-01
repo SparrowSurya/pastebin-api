@@ -35,8 +35,7 @@ class ApiTest(unittest.TestCase):
         expire_date = datetime.datetime.now() + datetime.timedelta(seconds=expire_after)
 
         response = self.client.post("/", json=json_request)
-        url = response.json()
-        _, key = url.split("/")
+        key = response.json()
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(key), 4)

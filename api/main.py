@@ -43,8 +43,7 @@ def create_paste(paste: schemas.Paste, db: Session = Depends(get_db)):
         logger.exception(error)
         raise HTTPException(status_code=500, detail=str(error))
 
-    url =  get_settings().base_url + f"/{db_paste.key}"
-    return url
+    return db_paste.key
 
 
 @app.get("/{key}", response_model=schemas.PasteInfo)
