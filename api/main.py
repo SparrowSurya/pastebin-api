@@ -6,6 +6,8 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
@@ -37,11 +39,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(lifespan=lifespan)
 models.Base.metadata.create_all(bind=engine)
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.get("/")
-def root() -> str:
-    """Root endpoint welcoming users to the service."""
-    return "Welcome to pastebin API."
+def root() -> FileResponse:
+    """Root endpoint serving the single-page HTML frontend."""
+    return FileResponse("index.html")
 
 
 @app.post("/")

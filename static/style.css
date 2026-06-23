@@ -1,3 +1,612 @@
-#hello {
-    padding-top: 1.25rem;
+/* Catppuccin Mocha CSS Design System & Theme for Pastebin */
+
+:root {
+    /* Catppuccin Mocha Color Palette */
+    --ctp-rosewater: #f5e0dc;
+    --ctp-flamingo: #f2cdcd;
+    --ctp-pink: #f5c2e7;
+    --ctp-mauve: #cba6f7;
+    --ctp-red: #f38ba8;
+    --ctp-maroon: #eba0ac;
+    --ctp-peach: #fab387;
+    --ctp-yellow: #f9e2af;
+    --ctp-green: #a6e3a1;
+    --ctp-teal: #94e2d5;
+    --ctp-sky: #89dceb;
+    --ctp-sapphire: #74c7ec;
+    --ctp-blue: #89b4fa;
+    --ctp-lavender: #b4befe;
+    
+    --ctp-text: #cdd6f4;
+    --ctp-subtext1: #bac2de;
+    --ctp-subtext0: #a6adc8;
+    --ctp-overlay2: #9399b2;
+    --ctp-overlay1: #7f849c;
+    --ctp-overlay0: #6c7086;
+    --ctp-surface2: #585b70;
+    --ctp-surface1: #45475a;
+    --ctp-surface0: #313244;
+    
+    --ctp-base: #1e1e2e;
+    --ctp-mantle: #181825;
+    --ctp-crust: #11111b;
+
+    /* Theme mappings */
+    --bg-color: var(--ctp-crust);
+    --card-bg: var(--ctp-base);
+    --card-border: var(--ctp-surface0);
+    --card-border-focus: var(--ctp-lavender);
+    
+    --primary-color: var(--ctp-mauve);
+    --secondary-color: var(--ctp-surface1);
+    --secondary-hover: var(--ctp-surface2);
+    
+    --text-main: var(--ctp-text);
+    --text-muted: var(--ctp-subtext0);
+    
+    --success: var(--ctp-green);
+    --success-bg: rgba(166, 227, 161, 0.12);
+    --info: var(--ctp-sky);
+    --info-bg: rgba(137, 220, 235, 0.12);
+    --danger: var(--ctp-red);
+    --danger-bg: rgba(243, 139, 168, 0.12);
+    
+    --font-outfit: 'Outfit', sans-serif;
+    --font-code: 'JetBrains Mono', monospace;
+    --transition: all 0.2s ease-out;
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-outfit);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 900px;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Header */
+.app-header {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.logo-icon {
+    font-size: 1.75rem;
+    color: var(--primary-color);
+}
+
+.logo-text {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.logo-text span {
+    color: var(--primary-color);
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Flat Panel Styles */
+.card-panel {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+/* Views Management */
+.view-panel {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.view-panel.active {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Settings Settings */
+.settings-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.setting-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.icon-spaced {
+    margin-right: 0.5rem;
+}
+
+.form-select {
+    background-color: var(--ctp-mantle);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: var(--font-outfit);
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition);
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 10px;
+    width: 100%;
+    max-width: 240px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a6adc8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-select:focus {
+    border-color: var(--card-border-focus);
+}
+
+/* Files List styles */
+.files-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.file-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+}
+
+.file-header-input {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.form-input {
+    background-color: var(--ctp-mantle);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: var(--font-outfit);
+    padding: 0.5rem 1rem;
+    outline: none;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.form-input:focus {
+    border-color: var(--card-border-focus);
+}
+
+.form-select-sm {
+    max-width: 160px;
+}
+
+.btn-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+.btn-remove:hover {
+    color: var(--danger);
+    background-color: var(--danger-bg);
+}
+
+/* Code Editor */
+.code-editor-wrapper {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+}
+
+.code-textarea {
+    width: 100%;
+    min-height: 250px;
+    background-color: var(--ctp-mantle);
+    border: none;
+    color: var(--text-main);
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 1rem;
+    resize: vertical;
+    outline: none;
+    tab-size: 4;
+    display: block;
+}
+
+.code-editor-wrapper:focus-within {
+    border-color: var(--card-border-focus);
+}
+
+/* Action Bar */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.action-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.expiry-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.expiry-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Buttons */
+.btn {
+    font-family: var(--font-outfit);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--ctp-crust);
+}
+
+.btn-primary:hover {
+    background-color: var(--ctp-rosewater);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-main);
+    border: 1px solid var(--card-border);
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.action-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    opacity: 0.6;
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.action-icon-btn:hover {
+    color: var(--text-main);
+    opacity: 1;
+}
+
+/* Viewer View styles */
+.viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-left {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.badge-success {
+    color: var(--success);
+    background-color: var(--success-bg);
+}
+
+.badge-info {
+    color: var(--info);
+    background-color: var(--info-bg);
+}
+
+.badge-kind {
+    color: var(--text-muted);
+    background-color: var(--ctp-mantle);
+    border: 1px solid var(--card-border);
+}
+
+/* Viewer Files display list */
+.viewer-file-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.viewer-file-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.viewer-file-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.viewer-file-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Code pre render styling */
+.code-render-box {
+    background-color: var(--ctp-mantle);
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+    padding: 1rem;
+    overflow-x: auto;
+    max-height: 500px;
+}
+
+.code-render-box pre {
+    margin: 0;
+}
+
+.code-render-box code {
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-main);
+    white-space: pre;
+}
+
+/* Notification Toast */
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--ctp-mantle);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 0.875rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toast-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Footer styling */
+.app-footer {
+    text-align: center;
+    margin-top: auto;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 2rem 0 0;
+}
+
+.footer-heart {
+    color: var(--ctp-red);
+}
+
+/* ---------------------------------------------------- */
+/* Catppuccin Mocha Prism Syntax Highlighting Definition */
+/* ---------------------------------------------------- */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: var(--ctp-overlay0);
+    font-style: italic;
+}
+
+.token.punctuation {
+    color: var(--ctp-overlay2);
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: var(--ctp-peach);
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: var(--ctp-green);
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: var(--ctp-teal);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: var(--ctp-mauve);
+}
+
+.token.function,
+.token.class-name {
+    color: var(--ctp-blue);
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+    color: var(--ctp-yellow);
+}
+
+.token.bold {
+    font-weight: bold;
+}
+.token.italic {
+    font-style: italic;
+}
+
+/* Responsive adjustment */
+@media (max-width: 600px) {
+    .app-container {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+    
+    .logo-text {
+        font-size: 1.75rem;
+    }
+    
+    .action-bar-right {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .expiry-container {
+        justify-content: space-between;
+    }
+    
+    .form-select {
+        max-width: 100%;
+    }
+    
+    .file-header-input {
+        flex-wrap: wrap;
+    }
+    
+    .form-select-sm {
+        max-width: 100%;
+        width: 100%;
+        order: 3;
+    }
+    
+    .form-input {
+        width: calc(100% - 3.5rem);
+    }
+    
+    .btn-remove {
+        order: 2;
+    }
+    
+    .action-bar {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .toast-notification {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        text-align: center;
+        justify-content: center;
+    }
 }

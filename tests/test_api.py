@@ -6,9 +6,11 @@ from fastapi.testclient import TestClient
 
 
 def test_root_endpoint(client: TestClient) -> None:
-    """Verify that root endpoint returns welcome message."""
+    """Verify that root endpoint returns the index.html frontend."""
     response = client.get("/")
     assert response.status_code == 200
+    assert "Pastebin - Share Code Instantly" in response.text
+    assert "app-container" in response.text
 
 
 def test_create_and_get_paste(client: TestClient) -> None:

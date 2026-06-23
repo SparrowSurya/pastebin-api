@@ -1,26 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium, fast pastebin service for sharing code and snippets instantly.">
+    <title>Pastebin - Share Code Instantly</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-      crossorigin="anonymous"
-    >
+    <!-- Main Style sheet -->
     <link rel="stylesheet" href="./static/style.css">
-    <title>Pastebin</title>
 </head>
 <body>
-    <h1 id="hello">Hello, Pastebin!</h1>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-container">
+                <i class="fa-solid fa-code logo-icon"></i>
+                <h1 class="logo-text">Paste<span>bin</span></h1>
+            </div>
+            <p class="subtitle">An elegant, fast code-sharing service</p>
+        </header>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-      crossorigin="anonymous"
-    ></script>
+        <!-- Creation Interface -->
+        <main id="creator-view" class="view-panel active">
+            <form id="paste-form" onsubmit="event.preventDefault();">
+                <!-- Files list container -->
+                <div id="files-list" class="files-container">
+                    <!-- File item template injected dynamically -->
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button type="button" id="add-file-btn" class="btn btn-secondary">
+                        <i class="fa-solid fa-plus icon-spaced"></i>Add Another File
+                    </button>
+                    <div class="action-bar-right">
+                        <div class="expiry-container">
+                            <label for="paste-expiry" class="expiry-label">Expiration:</label>
+                            <select id="paste-expiry" class="form-select form-select-sm" required>
+                                <option value="86400" selected>1 Day</option>
+                                <option value="604800">1 Week</option>
+                                <option value="2592000">1 Month</option>
+                            </select>
+                        </div>
+                        <button type="button" id="submit-btn" class="btn btn-primary">
+                            <i class="fa-solid fa-paper-plane icon-spaced"></i>Create Paste
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </main>
+
+        <!-- View Interface (Hidden initially) -->
+        <main id="viewer-view" class="view-panel">
+            <div class="viewer-header card-panel">
+                <div class="info-left">
+                    <button id="new-paste-btn" class="btn btn-secondary">
+                        <i class="fa-solid fa-plus icon-spaced"></i>New Paste
+                    </button>
+                </div>
+                <div class="info-right">
+                    <button id="download-all-btn" class="btn btn-secondary">
+                        <i class="fa-solid fa-download icon-spaced"></i>Download All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paste files display container -->
+            <div id="viewer-files-list" class="files-container">
+                <!-- Dynamically injected viewer file items -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Pastebin API &copy; 2026. Made with <i class="fa-solid fa-heart footer-heart"></i></p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-notification"></div>
+
+    <!-- Prism Syntax Highlighting Library & Autoloader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- JSZip for zipping multiple files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Main Controller Script -->
     <script src="./static/script.js"></script>
 </body>
 </html>
