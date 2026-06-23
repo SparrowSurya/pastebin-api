@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, List
+from typing import Annotated
 
 from pydantic import BaseModel, Field
 
@@ -20,7 +20,7 @@ class File(BaseModel):
 class Paste(BaseModel):
     """A single paste schema."""
 
-    files: Annotated[List[File], Field(min_length=1)]
+    files: Annotated[list[File], Field(min_length=1)]
     """List of files."""
 
     expiry: Annotated[int, Field(gt=0)]
@@ -30,8 +30,7 @@ class Paste(BaseModel):
 class PasteInfo(BaseModel):
     """A detailed paste schema."""
 
-
-    files: Annotated[List[File], Field(min_length=1)]
+    files: Annotated[list[File], Field(min_length=1)]
     """List of files."""
 
     key: Annotated[str, Field(max_length=8)]

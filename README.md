@@ -45,3 +45,20 @@ Run the test suite via the builtin `unittest` framework:
 ```sh
 uv run python -m unittest discover
 ```
+
+## Linting, Formatting & Type Checking
+
+To lint the codebase with Ruff:
+```sh
+uv run ruff check
+```
+
+To auto-format the codebase with Ruff:
+```sh
+uv run ruff format
+```
+
+To type-check the codebase with mypy:
+```sh
+uv run mypy api
+```

@@ -5,11 +5,10 @@ from sqlalchemy.orm import Session
 
 from . import crud
 
-
 logger = logging.getLogger(__name__)
 
 
-async def delete_expired_paste_task(interval: float, db: Session):
+async def delete_expired_paste_task(interval: float, db: Session) -> None:
     run = 1
     logger.info(f"Task started: delete-expired-paste after each {interval}s.")
     while run:

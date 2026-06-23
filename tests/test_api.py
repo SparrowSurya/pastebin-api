@@ -1,5 +1,5 @@
-import unittest
 import datetime
+import unittest
 
 from fastapi.testclient import TestClient
 
@@ -7,7 +7,6 @@ from api.main import app
 
 
 class ApiTest(unittest.TestCase):
-
     def setUp(self):
         self.client = TestClient(app)
 
@@ -26,7 +25,7 @@ class ApiTest(unittest.TestCase):
                 },
                 {
                     "name": "hello.py",
-                    "text": "print(\"Hello, World!\")",
+                    "text": 'print("Hello, World!")',
                     "kind": "python",
                 },
             ],
@@ -42,7 +41,9 @@ class ApiTest(unittest.TestCase):
 
         response = self.client.get(f"/{key}")
         json_response = response.json()
-        api_expire_date = datetime.datetime.strptime(json_response["expiry"], "%Y-%m-%dT%H:%M:%S.%f")
+        api_expire_date = datetime.datetime.strptime(
+            json_response["expiry"], "%Y-%m-%dT%H:%M:%S.%f"
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json_response["files"], json_request["files"])
@@ -51,13 +52,7 @@ class ApiTest(unittest.TestCase):
 
     def test_fails_on_empty_text(self):
         json_request = {
-            "files": [
-                {
-                    "name": "",
-                    "text": "",
-                    "kind": ""
-                }
-            ],
+            "files": [{"name": "", "text": "", "kind": ""}],
             "expiry": 3600,
         }
         response = self.client.post("/", json=json_request)
@@ -86,7 +81,7 @@ class ApiTest(unittest.TestCase):
             "files": [
                 {
                     "name": "hello.py",
-                    "text": "print(\"Hello, World!\")",
+                    "text": 'print("Hello, World!")',
                     "kind": "python",
                 }
             ],

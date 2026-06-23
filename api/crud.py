@@ -1,16 +1,15 @@
 import datetime
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
 from . import keygen, models, schemas
 
 
-def get_db_paste_by_key(db: Session, key: str) -> Optional[schemas.PasteInfo]:
-    return db.query(models.Paste).filter(models.Paste.key==key).first()
+def get_db_paste_by_key(db: Session, key: str) -> models.Paste | None:
+    return db.query(models.Paste).filter(models.Paste.key == key).first()
 
 
-def create_db_paste(db: Session, paste: schemas.Paste) -> schemas.PasteInfo:
+def create_db_paste(db: Session, paste: schemas.Paste) -> models.Paste:
     key = keygen.create_unique_random_key(db)
 
     db_paste = models.Paste(key=key, expiry=paste.expiry)
@@ -23,7 +22,7 @@ def create_db_paste(db: Session, paste: schemas.Paste) -> schemas.PasteInfo:
     return db_paste
 
 
-def delete_expired_pastes(db: Session):
+def delete_expired_pastes(db: Session) -> None:
     now = datetime.datetime.now()
 
     expired_pastes = db.query(models.Paste).filter(models.Paste.exp_date <= now).all()

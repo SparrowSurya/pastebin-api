@@ -1,12 +1,11 @@
-import unittest
 import time
+import unittest
 
-from api import database, crud, schemas
+from api import crud, database, schemas
 
 
 # NOTE - others are not included since they are being tested indirectly
 class TestTask(unittest.TestCase):
-
     def setUp(self):
         self.db = database.SessionLocal()
 
@@ -35,7 +34,7 @@ class TestTask(unittest.TestCase):
         self.assertIsNotNone(crud.get_db_paste_by_key(self.db, pasteinfo1.key))
         self.assertIsNotNone(crud.get_db_paste_by_key(self.db, pasteinfo2.key))
 
-        time.sleep(1) # wait for paste1 to expire
+        time.sleep(1)  # wait for paste1 to expire
 
         crud.delete_expired_pastes(self.db)
 

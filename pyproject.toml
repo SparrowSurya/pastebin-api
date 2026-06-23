@@ -48,3 +48,22 @@ repository = "https://github.com/sparrowsurya/pastebin-api"
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+    "ruff>=0.5.0",
+    "mypy>=1.10.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+strict = true
+plugins = ["sqlalchemy.ext.mypy.plugin"]

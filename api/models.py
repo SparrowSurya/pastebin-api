@@ -1,39 +1,44 @@
 import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Text
-from sqlalchemy.orm import relationship, declared_attr, declarative_base
+from sqlalchemy import DateTime, ForeignKey, String, Text
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    declared_attr,
+    mapped_column,
+    relationship,
+)
 
 
-class _Base(object):
+class Base(DeclarativeBase):
     """
     Base class which provides automated table names and a primary key column.
     """
 
-    @declared_attr
+    @declared_attr.directive
     def __tablename__(cls) -> str:
-        return str(cls.__name__.lower())
+        return cls.__name__.lower()
 
-    id = Column(Integer, primary_key=True)
-
-
-Base = declarative_base(cls=_Base)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
 
 class Paste(Base):
     """A single paste."""
 
-    key = Column(String(8))
-    pub_date = Column(DateTime)
-    exp_date = Column(DateTime)
-    files = relationship("File", cascade="all,delete", backref="paste")
+    key: Mapped[str] = mapped_column(String(8))
+    pub_date: Mapped[datetime.datetime] = mapped_column(DateTime)
+    exp_date: Mapped[datetime.datetime] = mapped_column(DateTime)
+    files: Mapped[list["File"]] = relationship(
+        "File", cascade="all,delete", backref="paste"
+    )
 
-    def __init__(self, key: str, expiry: int):
+    def __init__(self, key: str, expiry: int) -> None:
         self.key = key
         self.pub_date = datetime.datetime.now()
         self.exp_date = datetime.datetime.now() + datetime.timedelta(seconds=expiry)
 
     @property
-    def expiry(self):
+    def expiry(self) -> datetime.datetime:
         return self.exp_date
 
     def __repr__(self) -> str:
@@ -43,12 +48,12 @@ class Paste(Base):
 class File(Base):
     """A file associated with single paste."""
 
-    paste_id = Column(ForeignKey(Paste.id))
-    name = Column(String(64), default="")
-    kind = Column(String(64))
-    text = Column(Text)
+    paste_id: Mapped[int] = mapped_column(ForeignKey("paste.id"))
+    name: Mapped[str] = mapped_column(String(64), default="")
+    kind: Mapped[str] = mapped_column(String(64))
+    text: Mapped[str] = mapped_column(Text)
 
-    def __init__(self, text: str, kind: str, name: str = ""):
+    def __init__(self, text: str, kind: str, name: str = "") -> None:
         self.text = text
         self.kind = kind
         self.name = name
