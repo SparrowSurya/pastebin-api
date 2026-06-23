@@ -41,8 +41,10 @@ dependencies = [
 ]
 requires-python = ">= 3.9"
 readme = "README.md"
-license = { name = "MIT License" }
+license = { text = "MIT License" }
 
 [project.urls]
 repository = "https://github.com/sparrowsurya/pastebin-api"
-homepage = ""
+
+[tool.uv]
+package = false
