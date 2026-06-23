@@ -1,100 +1,102 @@
+"""API endpoints test suite."""
+
 import datetime
-import unittest
 
 from fastapi.testclient import TestClient
 
-from api.main import app
+
+def test_root_endpoint(client: TestClient) -> None:
+    """Verify that root endpoint returns welcome message."""
+    response = client.get("/")
+    assert response.status_code == 200
 
 
-class ApiTest(unittest.TestCase):
-    def setUp(self):
-        self.client = TestClient(app)
+def test_create_and_get_paste(client: TestClient) -> None:
+    """Verify posting a paste correctly saves it and makes it retrievable."""
+    expire_after = 3600
+    json_request = {
+        "files": [
+            {
+                "name": "hello.txt",
+                "text": "hello",
+                "kind": "text",
+            },
+            {
+                "name": "hello.py",
+                "text": 'print("Hello, World!")',
+                "kind": "python",
+            },
+        ],
+        "expiry": expire_after,
+    }
+    expire_date = datetime.datetime.now() + datetime.timedelta(seconds=expire_after)
 
-    def test_root_endpoint(self):
-        response = self.client.get("/")
-        self.assertEqual(response.status_code, 200)
+    response = client.post("/", json=json_request)
+    assert response.status_code == 200
+    key = response.json()
+    assert len(key) == 4
 
-    def test_create_and_get_paste(self):
-        expire_after = 3600
-        json_request = {
-            "files": [
-                {
-                    "name": "hello.txt",
-                    "text": "hello",
-                    "kind": "text",
-                },
-                {
-                    "name": "hello.py",
-                    "text": 'print("Hello, World!")',
-                    "kind": "python",
-                },
-            ],
-            "expiry": expire_after,
-        }
-        expire_date = datetime.datetime.now() + datetime.timedelta(seconds=expire_after)
+    response = client.get(f"/{key}")
+    assert response.status_code == 200
+    json_response = response.json()
+    api_expire_date = datetime.datetime.strptime(
+        json_response["expiry"], "%Y-%m-%dT%H:%M:%S.%f"
+    )
 
-        response = self.client.post("/", json=json_request)
-        key = response.json()
+    assert json_response["files"] == json_request["files"]
+    assert json_response["key"] == key
+    assert api_expire_date - expire_date < datetime.timedelta(seconds=10)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(key), 4)
 
-        response = self.client.get(f"/{key}")
-        json_response = response.json()
-        api_expire_date = datetime.datetime.strptime(
-            json_response["expiry"], "%Y-%m-%dT%H:%M:%S.%f"
-        )
+def test_fails_on_empty_text(client: TestClient) -> None:
+    """Verify that creating paste with empty text fails with validation error."""
+    json_request = {
+        "files": [{"name": "", "text": "", "kind": ""}],
+        "expiry": 3600,
+    }
+    response = client.post("/", json=json_request)
+    assert response.status_code == 422
+    json_response = response.json()
+    assert json_response["detail"][0]["type"] == "string_too_short"
+    assert "text" in json_response["detail"][0]["loc"]
+    assert "min_length" in json_response["detail"][0]["ctx"].keys()
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json_response["files"], json_request["files"])
-        self.assertEqual(json_response["key"], key)
-        self.assertLess(api_expire_date - expire_date, datetime.timedelta(seconds=10))
 
-    def test_fails_on_empty_text(self):
-        json_request = {
-            "files": [{"name": "", "text": "", "kind": ""}],
-            "expiry": 3600,
-        }
-        response = self.client.post("/", json=json_request)
-        json_response = response.json()
+def test_fails_on_zero_files(client: TestClient) -> None:
+    """Verify that creating paste with zero files fails with validation error."""
+    json_request = {
+        "files": [],
+        "expiry": 3600,
+    }
+    response = client.post("/", json=json_request)
+    assert response.status_code == 422
+    json_response = response.json()
+    assert json_response["detail"][0]["type"] == "too_short"
+    assert "files" in json_response["detail"][0]["loc"]
+    assert "min_length" in json_response["detail"][0]["ctx"].keys()
 
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(json_response["detail"][0]["type"], "string_too_short")
-        self.assertIn("text", json_response["detail"][0]["loc"])
-        self.assertIn("min_length", json_response["detail"][0]["ctx"].keys())
 
-    def test_fails_on_zero_files(self):
-        json_request = {
-            "files": [],
-            "expiry": 3600,
-        }
-        response = self.client.post("/", json=json_request)
-        json_response = response.json()
+def test_fails_on_zero_expiry(client: TestClient) -> None:
+    """Verify that creating paste with zero expiry fails with validation error."""
+    json_request = {
+        "files": [
+            {
+                "name": "hello.py",
+                "text": 'print("Hello, World!")',
+                "kind": "python",
+            }
+        ],
+        "expiry": 0,
+    }
+    response = client.post("/", json=json_request)
+    assert response.status_code == 422
+    json_response = response.json()
+    assert json_response["detail"][0]["type"] == "greater_than"
+    assert "expiry" in json_response["detail"][0]["loc"]
+    assert "gt" in json_response["detail"][0]["ctx"].keys()
 
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(json_response["detail"][0]["type"], "too_short")
-        self.assertIn("files", json_response["detail"][0]["loc"])
-        self.assertIn("min_length", json_response["detail"][0]["ctx"].keys())
 
-    def test_fails_on_zero_expiry(self):
-        json_request = {
-            "files": [
-                {
-                    "name": "hello.py",
-                    "text": 'print("Hello, World!")',
-                    "kind": "python",
-                }
-            ],
-            "expiry": 0,
-        }
-        response = self.client.post("/", json=json_request)
-        json_response = response.json()
-
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(json_response["detail"][0]["type"], "greater_than")
-        self.assertIn("expiry", json_response["detail"][0]["loc"])
-        self.assertIn("gt", json_response["detail"][0]["ctx"].keys())
-
-    def test_404_on_invalid_paste_key(self):
-        response = self.client.get("/abcd")
-        self.assertEqual(response.status_code, 404)
+def test_404_on_invalid_paste_key(client: TestClient) -> None:
+    """Verify that querying a non-existent paste key returns 404."""
+    response = client.get("/abcd")
+    assert response.status_code == 404
