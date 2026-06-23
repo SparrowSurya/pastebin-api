@@ -8,6 +8,12 @@ from pygments.lexers.special import TextLexer
 logger = logging.getLogger(__name__)
 
 
+# Mapping to normalize certain syntax formats (e.g. Mojo to Python)
+SYNTAX_NORMALIZATION = {
+    "mojo": "python",
+}
+
+
 def detect_language(text: str, fallback_kind: str, filename: str = "") -> str:
     """Analyze text snippet content to automatically detect its programming language.
 
@@ -28,6 +34,7 @@ def detect_language(text: str, fallback_kind: str, filename: str = "") -> str:
             lexer = get_lexer_for_filename(filename)
             if lexer and not isinstance(lexer, TextLexer) and lexer.aliases:
                 detected = str(lexer.aliases[0])
+                detected = SYNTAX_NORMALIZATION.get(detected, detected)
                 logger.info(
                     "Auto-detected language '%s' from filename '%s' (user: '%s')",
                     detected,
@@ -45,6 +52,7 @@ def detect_language(text: str, fallback_kind: str, filename: str = "") -> str:
             # If Pygments successfully guesses a specific language (not plain text)
             if lexer and not isinstance(lexer, TextLexer) and lexer.aliases:
                 detected = str(lexer.aliases[0])
+                detected = SYNTAX_NORMALIZATION.get(detected, detected)
                 logger.info(
                     "Auto-detected language '%s' from content (user: '%s')",
                     detected,

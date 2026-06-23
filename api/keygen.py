@@ -27,20 +27,35 @@ def create_random_key(length: int = 4) -> str:
 def create_unique_random_key(db: Session) -> str:
     """Generate a random alphanumeric key that is unique in the database.
 
-    Tries up to 10 times to find an unused key.
+    Starts with a 4-character key. If it encounters collisions (every 5 failed
+    attempts), it increases the key length by 1 to expand the key space.
+    If it reaches a length of 8 and still fails (which is mathematically
+    virtually impossible), it raises a RuntimeError.
 
     Args:
         db: Database session.
 
     Returns:
-        A unique 4-character key.
+        A unique random alphanumeric key.
 
     Raises:
-        RuntimeError: If all generation attempts conflict with existing records.
+        RuntimeError: If unique key cannot be generated.
     """
-    ATTEMPTS = 10
-    for _ in range(ATTEMPTS):
-        key = create_random_key()
+    length = 4
+    attempts = 0
+    total_attempts = 0
+    MAX_TOTAL_ATTEMPTS = 25
+
+    while total_attempts < MAX_TOTAL_ATTEMPTS:
+        key = create_random_key(length)
         if crud.get_db_paste_by_key(db, key) is None:
             return key
-    raise RuntimeError(f"Failed to generate unique random key in {ATTEMPTS} attempts.")
+        attempts += 1
+        total_attempts += 1
+        if attempts >= 5:
+            length += 1
+            attempts = 0
+
+    raise RuntimeError(
+        "Failed to generate unique random key after expanding search space."
+    )

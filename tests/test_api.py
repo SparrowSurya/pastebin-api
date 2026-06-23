@@ -102,3 +102,37 @@ def test_404_on_invalid_paste_key(client: TestClient) -> None:
     """Verify that querying a non-existent paste key returns 404."""
     response = client.get("/abcd")
     assert response.status_code == 404
+
+
+def test_fails_on_too_large_text(client: TestClient) -> None:
+    """Verify that creating a paste with file text over 1MB fails."""
+    json_request = {
+        "files": [
+            {
+                "name": "large.txt",
+                "text": "a" * 1_000_001,
+                "kind": "text",
+            }
+        ],
+        "expiry": 3600,
+    }
+    response = client.post("/", json=json_request)
+    assert response.status_code == 422
+    json_response = response.json()
+    assert json_response["detail"][0]["type"] == "string_too_long"
+    assert "text" in json_response["detail"][0]["loc"]
+
+
+def test_fails_on_too_many_files(client: TestClient) -> None:
+    """Verify that creating a paste with more than 10 files fails."""
+    json_request = {
+        "files": [
+            {"name": f"f{i}.txt", "text": "content", "kind": "text"} for i in range(11)
+        ],
+        "expiry": 3600,
+    }
+    response = client.post("/", json=json_request)
+    assert response.status_code == 422
+    json_response = response.json()
+    assert json_response["detail"][0]["type"] == "too_long"
+    assert "files" in json_response["detail"][0]["loc"]

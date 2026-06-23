@@ -12,7 +12,7 @@ class File(BaseModel):
     name: Annotated[str, Field(max_length=64)]
     """Name of the file."""
 
-    text: Annotated[str, Field(min_length=1)]
+    text: Annotated[str, Field(min_length=1, max_length=1_000_000)]
     """Text contents of the file."""
 
     kind: Annotated[str, Field(max_length=64)]
@@ -22,8 +22,8 @@ class File(BaseModel):
 class Paste(BaseModel):
     """Payload data model for creating a new paste."""
 
-    files: Annotated[list[File], Field(min_length=1)]
-    """List of files contained in this paste (must have at least one)."""
+    files: Annotated[list[File], Field(min_length=1, max_length=10)]
+    """List of files contained in this paste (must have at least one, max 10)."""
 
     expiry: Annotated[int, Field(gt=0)]
     """Expiration time limit relative to creation (in seconds)."""

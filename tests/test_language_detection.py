@@ -81,3 +81,22 @@ def test_content_guess_exception_falls_back(db_session: Session) -> None:
     with patch("api.language_detector.guess_lexer", side_effect=ValueError("Error")):
         db_paste = crud.create_db_paste(db_session, paste)
     assert db_paste.files[0].kind == "fallback-type"
+
+
+def test_normalizes_mojo_to_python(db_session: Session) -> None:
+    """Verify that auto-detected mojo language maps to python."""
+    from unittest.mock import MagicMock, patch
+
+    # Mock guess_lexer to return a lexer with "mojo" alias
+    mock_lexer = MagicMock()
+    mock_lexer.aliases = ["mojo"]
+
+    paste = schemas.Paste(
+        files=[schemas.File(name="test", text="print('hello')", kind="text")],
+        expiry=3600,
+    )
+
+    # We patch guess_lexer and check if it maps to python
+    with patch("api.language_detector.guess_lexer", return_value=mock_lexer):
+        db_paste = crud.create_db_paste(db_session, paste)
+    assert db_paste.files[0].kind == "python"
