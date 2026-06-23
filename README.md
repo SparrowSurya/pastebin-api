@@ -18,13 +18,16 @@ git clone https://github.com/sparrowsurya/pastebin-api
 ### 2. Environment Configuration (Optional)
 The project comes pre-configured with default settings using a local SQLite database (`sqlite:///./db.sqlite3`), so creating a `.env` file is optional for local development and testing.
 
-To override settings (e.g. for PostgreSQL in production), create a `.env` file:
+To override settings locally, you can create/modify `.env.dev`:
 ```env
-ENV_NAME=development
+ENV_NAME=dev
 BASE_URL=127.0.0.1:8000
-DB_URL=postgresql://USERNAME:PASSWORD@HOSTNAME:PORT/DATABASE
+DB_URL=sqlite:///./db.sqlite3
 INTERVAL=3600
 ```
+
+> [!NOTE]
+> When running on Vercel, the application dynamically ignores the local env files and relies directly on Environment Variables configured in your Vercel Dashboard settings. Use `.env.prod` purely as a local template reference.
 
 ### 3. Sync dependencies
 Installs the locked dependencies into a local virtual environment:
