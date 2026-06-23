@@ -51,5 +51,12 @@ def client_fixture(db_session: Session) -> Generator[TestClient, None, None]:
             pass
 
     app.dependency_overrides[get_db] = override_get_db
-    yield TestClient(app)
+    with TestClient(app) as client:
+        yield client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def anyio_backend() -> str:
+    """Choose the async backend for anyio tests."""
+    return "asyncio"
