@@ -115,7 +115,7 @@ function addFileField(nameVal = "", kindVal = "text", textVal = "") {
     fileItem.innerHTML = `
         <div class="file-header-input">
             <i class="fa-regular fa-file-code" style="color: var(--text-muted);"></i>
-            <input type="text" class="form-input file-name" placeholder="filename.txt (e.g. script.py)" value="${nameVal}" required>
+            <input type="text" class="form-input file-name" placeholder="filename.txt (e.g. script.py)" value="${escapeHtml(nameVal)}" required>
             <select class="form-select form-select-sm file-kind">
                 <option value="">Auto-detect</option>
                 ${optionsHtml}
@@ -125,7 +125,7 @@ function addFileField(nameVal = "", kindVal = "text", textVal = "") {
             </button>
         </div>
         <div class="code-editor-wrapper">
-            <textarea class="code-textarea file-text" placeholder="Paste or write your code snippet here..." required>${textVal}</textarea>
+            <textarea class="code-textarea file-text" placeholder="Paste or write your code snippet here..." required>${escapeHtml(textVal)}</textarea>
         </div>
     `;
     
@@ -286,11 +286,15 @@ function loadPaste(key) {
 
 // Render retrieved Paste onto the screen
 function renderPaste(pasteData) {
-    // Clear list
     viewerFilesList.innerHTML = "";
     
     // Save current files for downloading all
     state.currentPasteFiles = pasteData.files;
+    
+    // Configure Prism autoloader languages path
+    if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
+        window.Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+    }
     
     // Render files
     pasteData.files.forEach((file, index) => {
@@ -298,16 +302,18 @@ function renderPaste(pasteData) {
         fileCard.className = "viewer-file-card card-panel";
         
         // Display filename or fallback placeholder
-        const displayName = file.name ? file.name : `unnamed_snippet_${index + 1}.txt`;
+        const hasName = file.name && file.name.trim().length > 0;
+        const displayName = hasName ? file.name.trim() : "";
         const codeId = `code-block-${index}`;
         
         fileCard.innerHTML = `
-            <div class="viewer-file-header">
+            <div class="viewer-file-header" style="${hasName ? '' : 'justify-content: flex-end;'}">
+                ${hasName ? `
                 <div class="viewer-file-title">
                     <i class="fa-regular fa-file-lines" style="color: var(--primary-color);"></i>
-                    <span>${displayName}</span>
-                    <span class="badge badge-kind">${file.kind || 'text'}</span>
+                    <span>${escapeHtml(displayName)}</span>
                 </div>
+                ` : ''}
                 <div class="viewer-file-actions">
                     <button class="action-icon-btn copy-btn" data-target="${codeId}" title="Copy Code">
                         <i class="fa-regular fa-copy"></i>
@@ -318,7 +324,7 @@ function renderPaste(pasteData) {
                 </div>
             </div>
             <div class="code-render-box">
-                <pre><code id="${codeId}" class="language-${file.kind || 'text'}">${escapeHtml(file.text)}</code></pre>
+                <pre class="language-${escapeHtml(file.kind || 'text')}"><code id="${codeId}" class="language-${escapeHtml(file.kind || 'text')}">${escapeHtml(file.text)}</code></pre>
             </div>
         `;
         
@@ -328,7 +334,7 @@ function renderPaste(pasteData) {
         
         // Wire up download button
         const downloadBtn = fileCard.querySelector(".download-btn");
-        downloadBtn.addEventListener("click", () => downloadFile(displayName, file.text));
+        downloadBtn.addEventListener("click", () => downloadFile(displayName || `unnamed_snippet_${index + 1}.txt`, file.text));
         
         viewerFilesList.appendChild(fileCard);
     });
